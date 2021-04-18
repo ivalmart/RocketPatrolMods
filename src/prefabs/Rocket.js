@@ -11,7 +11,6 @@ class Rocket extends Phaser.GameObjects.Sprite {
         this.sfxRocket = scene.sound.add('sfx_rocket'); // add rocket sfx
     }
 
-    // updates
     update() {
         // left/right movement
         if(!this.isFiring) {
