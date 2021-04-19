@@ -31,10 +31,12 @@ class Menu extends Phaser.Scene {
         menuConfig
         this.add.text(game.config.width / 2, game.config.height / 4, 'P1: ← → arrows to move / (↑) to fire',
                       menuConfig).setOrigin(0.5);
+        // ---------- 2P Mode ----------
         this.add.text(game.config.width / 2, game.config.height / 3, 'P2: A and D to move / (W) to fire',
                       menuConfig).setOrigin(0.5);
         this.add.text(game.config.width / 2, game.config.height / 3 + borderPadding * 2 + borderPadding * 2,
                       'Press ← for Novice or → for Expert', menuConfig).setOrigin(0.5);
+        // ---------- Adjusts for More Instructions ----------
         menuConfig.backgroundColor = '#00FF00';
         menuConfig.color = "#000";
         this.add.text(game.config.width / 2, game.config.height / 3 + borderUISize * 2 + borderPadding * 2,
@@ -43,8 +45,14 @@ class Menu extends Phaser.Scene {
                       'Press (2) for 2-Player Mode', menuConfig).setOrigin(0.5);
         menuConfig.backgroundColor = '#0000FF';
         menuConfig.color = '#FFF';
-        this.playerMode = this.add.text(game.config.width / 2, game.config.height / 3 + borderUISize * 5     + borderPadding * 2,
+        this.playerMode = this.add.text(game.config.width / 2, game.config.height / 3 + borderUISize * 5 + borderPadding * 2,
                                         '1-Player Mode Active', menuConfig).setOrigin(0.5);
+        // ---------- High Score ----------
+        menuConfig.backgroundColor = '#F3B141';
+        menuConfig.color = '#843605';
+        this.add.text(game.config.width / 2, game.config.height / 2 + borderUISize * 5 + borderPadding * 2,
+                      'HI SCORE: ' + highScore, menuConfig).setOrigin(0.5);
+        
 
         // player modes
         this.singleplayer = true;
