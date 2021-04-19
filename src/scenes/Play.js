@@ -102,7 +102,7 @@ class Play extends Phaser.Scene {
                                        borderUISize + borderPadding * 2, this.p1Score, p1ScoreConfig);
 
         if(game.settings.multiMode) {
-               // initializes second score if multiplayer
+            // initializes second score if multiplayer
             this.p2Score = 0;
 
             let p2ScoreConfig = {
@@ -117,15 +117,13 @@ class Play extends Phaser.Scene {
                 },
                 fixedWidth: 100
             }
-            this.p2ScoreLeft = this.add.text(borderUISize * 5 + borderPadding,
+            this.p2ScoreLeft = this.add.text(borderUISize * 4 + borderPadding * 2,
                                              borderUISize + borderPadding * 2, this.p2Score, p2ScoreConfig);
         }
     
-        // defines timer
-        this.gameTimeLeft = game.settings.gameTimer;
-
-        // display timer
-        let timeConfig = {
+        // creates FIRE UI
+        // ---------- FIRE UI ----------
+        let fireConfig = {
             fontFamily: 'Courier',
             fontSize: '28px',
             backgroundColor: '#F3B141',
@@ -135,17 +133,45 @@ class Play extends Phaser.Scene {
                 top: 5,
                 bottom: 5,
             },
-            fixedWidth: 100
+            fixedWidth: 75
         }
-        this.timeLeft = this.add.text(game.config.width - borderUISize * 4 - borderPadding,
+
+        this.firingUI = this.add.text(game.config.width,//borderUISize * 8 + borderPadding * 2,
+                                      borderUISize + borderPadding * 2, 'FIRE', fireConfig);
+
+        // defines timer
+        this.gameTimeLeft = game.settings.gameTimer;
+
+        // display timer
+        // ---------- Timer ----------
+        let timeConfig = {
+            fontFamily: 'Courier',
+            fontSize: '28px',
+            backgroundColor: '#000000',
+            color: '#FF2222',
+            align: 'center',
+            padding: {
+                top: 5,
+                bottom: 5,
+            },
+            fixedWidth: 50
+        }
+        this.timeLeft = this.add.text(game.config.width - borderUISize * 2 - borderPadding * 3,
                                       borderUISize + borderPadding * 2, this.gameTimeLeft / 1000, timeConfig);
+
+        // sets high score at the top of the bar
+        // ---------- High Score ----------
+        timeConfig.fixedWidth = 150;
+        timeConfig.backgroundColor = '#F3B141';
+        timeConfig.color = '#843605';
+        this.currentHighScore = this.add.text(game.config.width - borderUISize * 8,
+                                              borderUISize + borderPadding * 2, "HI:" + highScore, timeConfig);
 
         // GAME OVER flag
         this.gameOver = false;
         
         // 60-second play clock
         p1ScoreConfig.fixedWidth = 0;
-
         this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
             if(game.settings.multiMode) {
                 if(this.p1Score > this.p2Score) {   // if player 1 wins
@@ -176,13 +202,26 @@ class Play extends Phaser.Scene {
         if(!this.gameOver) {
             // update rocket
             this.p1Rocket.update();
-            if(game.settings.multiMode) {
+            if(game.settings.multiMode) {   // if in 2P Mode
                 this.p2Rocket.update();
             }
             // update spaceships (x3)
             this.ship01.update();
             this.ship02.update();
             this.ship03.update();
+        }
+
+        // ---------- Player 2 UI Firing ----------
+        let player2Firing = false;
+        // checks to see if in multiplayer
+        if(game.settings.multiMode) {
+            player2Firing = this.p2Rocket.isFiring;   // is set to if the 2nd player is firing or not
+        }
+        // checks to see if firing in singleplayer
+        if(this.p1Rocket.isFiring || player2Firing) {
+            this.firingUI.x = borderUISize * 8 + borderPadding * 2; // moves it into place
+        } else { // it is not firing
+            this.firingUI.x = game.config.width; // moves it out of the scene
         }
 
         // check collisions for rocket 1
@@ -198,6 +237,7 @@ class Play extends Phaser.Scene {
             this.p1Rocket.reset();
             this.shipExplode(this.ship03, 1);
         }
+        // ---------- 2P Mode ----------
         // if there is a second player
         if(game.settings.multiMode) {
             // check collisions for rocket 2
@@ -241,6 +281,7 @@ class Play extends Phaser.Scene {
             boom.destroy();
         });
         // score add and repaint
+        // ---------- New Scoring for 2P Mode ----------
         if(rocketNumber == 1) {
             this.p1Score += ship.points;
             this.p1ScoreLeft.text = this.p1Score;
@@ -250,10 +291,20 @@ class Play extends Phaser.Scene {
             this.p2ScoreLeft.text = this.p2Score;
         }
 
+        // new high score
+        // ---------- High Score ----------
+        if(this.p1Score > highScore) {
+            highScore = this.p1Score;
+        }
+        if(this.p2Score > highScore) {
+            highScore = this.p2Score;
+        }
+        this.currentHighScore.text = "HI:" + highScore;
         // play audio sound file
         this.sound.play('sfx_explosion');
     }
 
+    // ---------- Timer ----------
     updateTimer() {
         this.gameTimeLeft -= 16.5;
         var newTime = Math.floor(this.gameTimeLeft / 1000);
