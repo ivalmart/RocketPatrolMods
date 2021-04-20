@@ -50,11 +50,11 @@ class Play extends Phaser.Scene {
 
         // add spaceship (x3)
         this.ship01 = new Spaceship(this, game.config.width + borderUISize * 6, borderUISize * 4,
-                                    'spaceship', 0, 30).setOrigin(0, 0);
+                                    'spaceship', 0, 30, 750).setOrigin(0, 0);
         this.ship02 = new Spaceship(this, game.config.width + borderUISize * 3, borderUISize * 5 + borderPadding * 2,
-                                    'spaceship', 0, 20).setOrigin(0, 0);
+                                    'spaceship', 0, 20, 500).setOrigin(0, 0);
         this.ship03 = new Spaceship(this, game.config.width, borderUISize * 6 + borderPadding * 4,
-                                    'spaceship', 0, 10).setOrigin(0, 0);
+                                    'spaceship', 0, 10, 250).setOrigin(0, 0);
 
         // --- define keys ---
         // reset button
@@ -138,10 +138,7 @@ class Play extends Phaser.Scene {
 
         this.firingUI = this.add.text(game.config.width,//borderUISize * 8 + borderPadding * 2,
                                       borderUISize + borderPadding * 2, 'FIRE', fireConfig);
-
-        // defines timer
-        this.gameTimeLeft = game.settings.gameTimer;
-
+        
         // display timer
         // ---------- Timer ----------
         let timeConfig = {
@@ -157,7 +154,10 @@ class Play extends Phaser.Scene {
             fixedWidth: 50
         }
         this.timeLeft = this.add.text(game.config.width - borderUISize * 2 - borderPadding * 3,
-                                      borderUISize + borderPadding * 2, this.gameTimeLeft / 1000, timeConfig);
+                                      borderUISize + borderPadding * 2, game.settings.gameTimer / 1000, timeConfig);
+
+        // stores current timer
+        this.currentTimer = game.settings.gameTimer;
 
         // sets high score at the top of the bar
         // ---------- High Score ----------
@@ -200,6 +200,8 @@ class Play extends Phaser.Scene {
         this.starfield.tilePositionX -= starSpeed;
 
         if(!this.gameOver) {
+            this.updateTimer();
+
             // update rocket
             this.p1Rocket.update();
             if(game.settings.multiMode) {   // if in 2P Mode
@@ -291,6 +293,10 @@ class Play extends Phaser.Scene {
             this.p2ScoreLeft.text = this.p2Score;
         }
 
+        // adds to the timer
+        this.clock.delay += ship.time;
+        this.currentTimer += ship.time;
+
         // new high score
         // ---------- High Score ----------
         if(this.p1Score > highScore) {
@@ -306,9 +312,11 @@ class Play extends Phaser.Scene {
 
     // ---------- Timer ----------
     updateTimer() {
-        this.gameTimeLeft -= 16.5;
-        var newTime = Math.floor(this.gameTimeLeft / 1000);
-        console.log(newTime);
-        this.timeLeft.text = Math.floor(this.gameTimeLeft / 1000);
+        var newTime = this.currentTimer - this.clock.getElapsed();
+        this.timeLeft.text = Math.floor(newTime / 1000);
+        //        this.gameTimeLeft -= 16.5;  // subtracts one second
+//        var newTime = Math.floor(this.gameTimeLeft / 1000);
+//        console.log(newTime);
+//        this.timeLeft.text = Math.floor(this.gameTimeLeft / 1000);
     }
 }

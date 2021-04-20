@@ -37,15 +37,17 @@ class Menu extends Phaser.Scene {
         this.add.text(game.config.width / 2, game.config.height / 3 + borderPadding * 2 + borderPadding * 2,
                       'Press ← for Novice or → for Expert', menuConfig).setOrigin(0.5);
         // ---------- Adjusts for More Instructions ----------
+        this.add.text(game.config.width / 2, game.config.height / 3 + borderPadding * 4 + borderPadding * 4,
+                      'Hitting Ships Adds Time', menuConfig).setOrigin(0.5);
         menuConfig.backgroundColor = '#00FF00';
         menuConfig.color = "#000";
-        this.add.text(game.config.width / 2, game.config.height / 3 + borderUISize * 2 + borderPadding * 2,
+        this.add.text(game.config.width / 2, game.config.height / 3 + borderUISize * 4 + borderPadding,
                       'Press (1) for 1-Player Mode', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width / 2, game.config.height / 3 + borderUISize * 3 + borderPadding * 2,
+        this.add.text(game.config.width / 2, game.config.height / 3 + borderUISize * 5 + borderPadding,
                       'Press (2) for 2-Player Mode', menuConfig).setOrigin(0.5);
         menuConfig.backgroundColor = '#0000FF';
         menuConfig.color = '#FFF';
-        this.playerMode = this.add.text(game.config.width / 2, game.config.height / 3 + borderUISize * 5 + borderPadding * 2,
+        this.playerMode = this.add.text(game.config.width / 2, game.config.height / 3 + borderUISize * 6 + borderPadding * 2,
                                         '1-Player Mode Active', menuConfig).setOrigin(0.5);
         // ---------- High Score ----------
         menuConfig.backgroundColor = '#F3B141';
