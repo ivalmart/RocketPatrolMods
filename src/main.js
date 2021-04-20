@@ -34,6 +34,6 @@ let highScore = 0;
 // Implement the speed increase that happens after 30 seconds in the original game (5):                         20 minutes
 // Create a new spaceship type (w/ new artwork) that's smaller, moves faster, and is worth more points (20):    3 Hours
 // _________________________________________________________________________________________________________________________
-// Estimated Time:                                                                                              ~17 Hours
+// Estimated Total and Time: (8 Modifications)   5 + 30 + 5 + 5 + 10 + 20 + 5 + 20 = 100                        ~17 Hours
 //
 // Received Help From: Matthew Hoover
