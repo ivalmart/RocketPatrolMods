@@ -30,4 +30,6 @@ let highScore = 0;
 // Implement the 'FIRE' UI text from the original game (5):                                         2 Hours
 // Display the time remaining (in seconds) on the screen (10):                                      3 Hours
 // Implement a new timing/scoring mechanism that adds time to the clock for successful hits (20):   1 Hour
+// Implement the speed increase that happens after 30 seconds in the original game (5):             20 minutes
 //
+// Received Help From: Matthew Hoover

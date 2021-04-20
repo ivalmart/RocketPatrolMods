@@ -170,7 +170,7 @@ class Play extends Phaser.Scene {
         // GAME OVER flag
         this.gameOver = false;
         
-        // 60-second play clock
+        // Game clock that shows GAME OVER screen after completion
         p1ScoreConfig.fixedWidth = 0;
         this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
             if(game.settings.multiMode) {
@@ -185,6 +185,13 @@ class Play extends Phaser.Scene {
             this.add.text(game.config.width / 2, game.config.height / 2, 'GAME OVER', p1ScoreConfig).setOrigin(0.5);
             this.add.text(game.config.width / 2, game.config.height / 2 + 64, 'Press (R) to Restart or ← for Menu', p1ScoreConfig).setOrigin(0.5);
             this.gameOver = true;
+        }, null, this);
+
+        // 30-second timer that increases speed after completion
+        this.thirtySecondClock = this.time.delayedCall(30000, () => {
+            this.ship01.moveSpeed *= 2;
+            this.ship02.moveSpeed *= 2;
+            this.ship03.moveSpeed *= 2;
         }, null, this);
     }
 
