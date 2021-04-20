@@ -12,6 +12,10 @@ class Play extends Phaser.Scene {
         // load MOD images
         this.load.image('player1rocket', './assets/player1Rocket.png');
         this.load.image('player2rocket', './assets/player2Rocket.png');
+
+        // adding meteor sprite object
+        this.load.image('meteor', './assets/meteor.png');
+
         // load spritesheet
         this.load.spritesheet('explosion', './assets/explosion.png', {
             frameWidth: 64,
@@ -19,6 +23,7 @@ class Play extends Phaser.Scene {
             startFrame: 0,
             endFrame: 9
         });
+
     }
 
     create() {
@@ -55,6 +60,13 @@ class Play extends Phaser.Scene {
                                     'spaceship', 0, 20, 500).setOrigin(0, 0);
         this.ship03 = new Spaceship(this, game.config.width, borderUISize * 6 + borderPadding * 4,
                                     'spaceship', 0, 10, 250).setOrigin(0, 0);
+        // new meteor object
+        // ---------- Meteor / New Spaceship ----------
+        // starts a good distance away
+        this.meteorObj = new Spaceship(this, game.config.width * 5, borderUISize * 8 + borderPadding * 3,
+                                       'meteor', 0, 50, 1000).setOrigin(0, 0);
+        // sets a new speed for meteor
+        this.meteorObj.moveSpeed += 2;
 
         // --- define keys ---
         // reset button
@@ -192,6 +204,7 @@ class Play extends Phaser.Scene {
             this.ship01.moveSpeed *= 2;
             this.ship02.moveSpeed *= 2;
             this.ship03.moveSpeed *= 2;
+            this.meteorObj.moveSpeed *= 2;
         }, null, this);
     }
 
@@ -218,6 +231,15 @@ class Play extends Phaser.Scene {
             this.ship01.update();
             this.ship02.update();
             this.ship03.update();
+
+            // ---------- Meteor Checking to Adjust for Timing ----------
+            // extends the length that the meteor will show up
+            if(this.meteorObj.x < this.meteorObj.width - borderPadding * 2 - borderUISize) {
+                this.meteorObj.x = game.config.width * 5;
+            }
+            // updates meteor position
+            this.meteorObj.update();
+
         }
 
         // ---------- Player 2 UI Firing ----------
@@ -246,6 +268,11 @@ class Play extends Phaser.Scene {
             this.p1Rocket.reset();
             this.shipExplode(this.ship03, 1);
         }
+        // checks for meteor collision
+        if(this.checkCollision(this.p1Rocket, this.meteorObj)) {
+            this.p1Rocket.reset();
+            this.shipExplode(this.meteorObj, 1);
+        }
         // ---------- 2P Mode ----------
         // if there is a second player
         if(game.settings.multiMode) {
@@ -261,6 +288,11 @@ class Play extends Phaser.Scene {
             if(this.checkCollision(this.p2Rocket, this.ship03)) {
                 this.p2Rocket.reset();
                 this.shipExplode(this.ship03, 2);
+            }
+            // checks for meteor collision
+            if(this.checkCollision(this.p2Rocket, this.meteorObj)) {
+                this.p2Rocket.reset();
+                this.shipExplode(this.meteorObj, 2);
             }
         }
     }
@@ -285,7 +317,12 @@ class Play extends Phaser.Scene {
         let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0, 0);    // places sprite where it was
         boom.anims.play('explode');     // plays animation
         boom.on('animationcomplete', () => {        // once animation is complete
-            ship.reset();
+            // makes a condition to if the meteor is hit, spawn the new one a good distance away
+            if(ship == this.meteorObj) { 
+                this.meteorObj.x = game.config.width * 5;
+            } else {        // if it is just a normal ship
+                ship.reset();
+            }
             ship.alpha = 1;
             boom.destroy();
         });
